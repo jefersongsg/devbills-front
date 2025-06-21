@@ -1,5 +1,7 @@
 import { CreditCard, List, TrendingUp, Wallet } from "lucide-react";
+import { useNavigate } from "react-router";
 import Button from "../components/Button";
+import { useAuth } from "../context/AuthContext";
 
 interface Feature {
   icon: JSX.Element;
@@ -8,6 +10,10 @@ interface Feature {
 }
 
 const Home = () => {
+  const navigate = useNavigate();
+  const auth = useAuth();
+  console.log(auth);
+
   const features: Readonly<Feature[]> = [
     {
       icon: <Wallet className="container-features " />,
@@ -46,7 +52,9 @@ const Home = () => {
                 Organize sua financas pessoais ou do seu negócio com facilidade.
               </p>
               <div className="flex flex-col ms:flex-row space-y-4 ms:space-y-0 ms:space-x-4">
-                <Button className="text-center px-6 py-3">Começar Agora</Button>
+                <Button className="text-center px-6 py-3" onClick={() => navigate("/login")}>
+                  Começar Agora
+                </Button>
               </div>
             </div>
           </div>
@@ -84,7 +92,9 @@ const Home = () => {
               Comece a usar o sistema agora mesmo e tenha o controle total sobre seu dinheiro. É
               gratuito e fácil de usar!
             </p>
-            <Button className="mx-auto px-6 py-3">Criar Conta Gratuita</Button>
+            <Button className="mx-auto px-6 py-3" onClick={() => navigate("/login")}>
+              Criar Conta Gratuita
+            </Button>
           </div>
         </section>
       </div>

@@ -1,16 +1,25 @@
-import { signInWithPopup } from "firebase/auth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import GoogleLoginButton from "../components/GoogleLoginButton";
-
-import { firebaseAuth, googleAuthProvider } from "../configs/firebase";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { signInGoogle, authState } = useAuth();
+  const navigate = useNavigate();
+
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(firebaseAuth, googleAuthProvider);
-    } catch (error) {
-      console.error("Erro ao fazer login com o Google:", error);
+      await signInGoogle();
+    } catch (err) {
+      console.error("Erro ao fazer login com o Google:", err);
     }
   };
+
+  useEffect(() => {
+    if (authState.user && authState.loading) {
+      navigate("/dashboard");
+    }
+  }, [authState.user, authState.loading, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-200 py-12 px-4 sm:px-6 lg:px-8">
@@ -31,6 +40,8 @@ const Login = () => {
           </section>
 
           <GoogleLoginButton onClick={handleGoogleLogin} isLoading={false} />
+
+          {authState.error && <p className="text-red-700 text-center mt-4">{authState.error}</p>}
 
           <footer className="mt-6">
             <p className="mt-1 text-sm text-gray-600 text-center">
