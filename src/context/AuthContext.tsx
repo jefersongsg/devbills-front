@@ -3,13 +3,13 @@ import { type ReactNode, createContext, useContext, useEffect, useState } from "
 import { firebaseAuth, googleAuthProvider } from "../configs/firebase";
 import type { AuthState } from "../types/auth";
 
-interface AuthcontextProps {
+interface AuthContextProps {
   authState: AuthState;
   signInGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthcontextProps | undefined>(undefined);
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>({
@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(
       firebaseAuth,
       (user) => {
+        console.log("Usuário autenticado:", user);
         if (user) {
           setAuthState({
             user: {
@@ -56,20 +57,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInGoogle = async (): Promise<void> => {
     setAuthState((prev) => ({ ...prev, loading: true }));
+
     try {
       await signInWithPopup(firebaseAuth, googleAuthProvider);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Erro ao fazer login com o Google:";
+
       setAuthState((prev) => ({ ...prev, loading: false, error: message }));
     }
   };
 
   const signOut = async (): Promise<void> => {
     setAuthState((prev) => ({ ...prev, loading: true }));
+
     try {
       await firebaseSignOut(firebaseAuth);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Erro ao fazer logout:";
+
       setAuthState((prev) => ({ ...prev, error: message }));
     }
   };

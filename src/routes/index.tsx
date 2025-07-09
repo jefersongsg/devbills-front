@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import { AuthProvider } from "../context/AuthContext";
+import AppLayout from "../layout/AppLayout";
 import Dashboard from "../pages/Dashboard";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import PrivateRouter from "./PrivateRouter";
 
 const AppRoutes = () => {
   return (
@@ -11,7 +13,12 @@ const AppRoutes = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+
+          <Route element={<PrivateRouter />}>
+            <Route element={<AppLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+          </Route>
 
           <Route path="*" element={<h2> Pagina Not Found</h2>} />
         </Routes>
